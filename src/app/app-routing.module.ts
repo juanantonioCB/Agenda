@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: 'config',
     loadChildren: () => import('./config/config.module').then( m => m.ConfigPageModule)
+  },  {
+    path: 'popovercomponent',
+    loadChildren: () => import('./ui/popovercomponent/popovercomponent.module').then( m => m.PopovercomponentPageModule)
   },
+
 ];
 
 @NgModule({

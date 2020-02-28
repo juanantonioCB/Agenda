@@ -7,20 +7,19 @@ import { IonicModule } from '@ionic/angular';
 import { ConfigPageRoutingModule } from './config-routing.module';
 
 import { ConfigPage } from './config.page';
-import { PopoverComponent } from '../ui/popover/popover.component';
+import { Camera } from '@ionic-native/camera/ngx';
+import { UiComponent } from '../ui/ui.component';
+
 
 @NgModule({
   entryComponents:[],
   imports: [
-    CommonModule,
-    PopoverComponent,
-    FormsModule,
+    CommonModule,    FormsModule,
     IonicModule,
     ConfigPageRoutingModule,
-    ReactiveFormsModule,
-    PopoverComponent
+    ReactiveFormsModule
   ],
   declarations: [ConfigPage],
-  providers:[]
+  providers:[Camera,UiComponent]
 })
 export class ConfigPageModule {}

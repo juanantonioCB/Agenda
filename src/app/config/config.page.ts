@@ -3,7 +3,11 @@ import { ImagePicker, ImagePickerOptions } from '@ionic-native/image-picker/ngx'
 import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { Task } from '../model/Task';
 import { PopoverController } from '@ionic/angular';
-import { PopoverComponent } from '../ui/popover/popover.component';
+import { PopovercomponentPage } from '../ui/popovercomponent/popovercomponent.page';
+import { UiComponent } from '../ui/ui.component';
+import { FirebaseDBService } from '../services/firebase-db.service';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+
 
 @Component({
   selector: 'app-config',
@@ -18,9 +22,14 @@ export class ConfigPage implements OnInit {
   image:string='assets/no_image.png';
   taskForm: FormGroup;
   constructor(private imagePicker: ImagePicker, private formBuilder: FormBuilder,
-    private popoverController: PopoverController) {
+    private popoverController: PopoverController,
+    private camera: Camera,
+    private ui:UiComponent,
+    private db:FirebaseDBService) {
     this.taskForm=formBuilder.group({
-      titulo: ["", Validators.required]
+      titulo: ["", Validators.required],
+      horaComienzo: ['', Validators.required],
+      horaFinalizacion: ['', Validators.required]
     });
    }
 
@@ -29,12 +38,36 @@ export class ConfigPage implements OnInit {
 
 
   async createPopover(ev: any){
-    const popover = await this.popoverController.create({
-      component: PopoverComponent,
-      event: ev,
-      translucent: true
+    this.popoverController.create({
+      component: PopovercomponentPage,
+      showBackdrop: false
+    }).then((popoverElement) => {
+      popoverElement.onDidDismiss().then((d) => {
+        if (d.data) {
+          if (d.data === 'pictograma') {
+            console.log('pictog');
+            this.choosePhoto();
+          }
+          if (d.data === 'gallery') {
+            this.getImages();
+          }
+        }
+      })
+      popoverElement.present();
     });
-    return await popover.present();
+  }
+
+  public choosePhoto() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+    }
+    this.camera.getPicture(options).then(imageData=>{
+      this.image='data:image/jpeg;base64,'+imageData;
+    })
   }
 
   getImages() {
@@ -58,8 +91,38 @@ export class ConfigPage implements OnInit {
   onSubmit() {
     // Process checkout data here
     console.warn(this.taskForm.value);
+  }
+
+  async crearTask() {
+    await this.ui.presentLoading();
+    const horaComienzo = new Date(this.taskForm.get('horaComienzo').value);
+    const horaFinalizacion =new Date(this.taskForm.get('horaFinalizacion').value);
+
+    let hc:string=(horaComienzo.getHours()<10?'0'+horaComienzo.getHours():horaComienzo.getHours())+':'
+    +(horaComienzo.getMinutes()<10?'0'+horaComienzo.getMinutes():horaComienzo.getMinutes());
+    let hf:string=(horaFinalizacion.getHours()<10?'0'+horaFinalizacion.getHours():horaFinalizacion.getHours())+':'
+    +(horaFinalizacion.getMinutes()<10?'0'+horaFinalizacion.getMinutes():horaFinalizacion.getMinutes());
+    console.log(hc);
+    console.log(hf);
+
+    let task:Task={
+      name:this.taskForm.get('titulo').value,
+      horaComienzo:hc,
+      horaFinalizacion:hf,
+      image:this.image
+    }
+
+    this.task=task;
 
 
+    this.db.addTask(this.task,'user1').then(async r=>{
+      await this.ui.presentToast('Tarea agregada correctamente','success');
+      await this.ui.hideLoading();
+    }).catch(async err=>{
+      await this.ui.presentToast(err,'danger');
+      await this.ui.hideLoading();
+    });
   }
 }
+
 

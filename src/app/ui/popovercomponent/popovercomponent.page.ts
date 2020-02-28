@@ -1,0 +1,30 @@
+import { Component, OnInit } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
+
+@Component({
+  selector: 'app-popovercomponent',
+  templateUrl: './popovercomponent.page.html',
+  styleUrls: ['./popovercomponent.page.scss'],
+})
+export class PopovercomponentPage implements OnInit {
+
+  constructor(private popoverController:PopoverController) { }
+
+
+  ngOnInit() {
+  }
+
+  close(){
+    this.popoverController.dismiss();
+  }
+
+  nuevoPictograma(){
+    this.popoverController.dismiss('pictograma');
+  }
+
+  lanzarGaleria(){
+    this.popoverController.dismiss('gallery');
+
+  }
+
+}
