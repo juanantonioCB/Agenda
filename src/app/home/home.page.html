@@ -1,12 +1,67 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
+    <ion-title>AGENDA</ion-title>
+    <ion-progress-bar color="warning" value="0.6"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-button routerLink="/config">Configuración</ion-button>
-  
+
+
+  <ion-select placeholder="Selecciona un perfil">
+    <ion-select-option value="f">Female</ion-select-option>
+    <ion-select-option value="m">Male</ion-select-option>
+  </ion-select>
+
+  <ion-list >
+
+    <!-- ANIMACIÓN MIENTRAS CARGA LA LISTA-->
+    <ng-container *ngIf="!tasks || tasks.length == 0">
+      <div *ngFor="let n of [0,1,2]" padding>
+        <ion-skeleton-text></ion-skeleton-text>
+        <p>
+          <ion-skeleton-text class="fake-skeleton"></ion-skeleton-text>
+        </p>
+      </div>
+    </ng-container>
+
+    <ion-item-sliding *ngFor="let task of tasks">
+      <ion-item>
+      <ion-card >
+        
+        <ion-card-header>
+          <ion-card-title>{{task.name}} </ion-card-title>
+
+          <ion-card-subtitle>{{task.horaComienzo}} - {{task.horaFinalizacion}}</ion-card-subtitle>
+          <ion-card-subtitle>
+            
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-img [src]="task.image"></ion-img>
+        </ion-card-content>
+      </ion-card>
+
+    </ion-item>
+      <ion-item-options side="end" (ionSwipe)="delete(task.id)">
+        <ion-item-option (click)="delete(task.id)" color="danger" expandable>
+          <ion-icon name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+      <ion-item-options side="start" (ionSwipe)="edit(task.id)">
+        <ion-item-option (click)="edit(task.id)" color="primary" expandable>
+          <ion-icon name="brush"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+
+    </ion-item-sliding>
+  </ion-list>
+
+
+
+
+
 </ion-content>
