@@ -9,7 +9,7 @@ const TASK_KEY = 'my-tasks';
 export class DatabaseService {
 
   constructor(private storage: Storage, private sqlite: SQLite) {}
-
+/*
   addTask(task: Task): Promise<any> {
     return this.storage.get(TASK_KEY).then((tasks: Task[]) => {
       if (tasks) {
@@ -54,6 +54,6 @@ export class DatabaseService {
       return this.storage.set(TASK_KEY,toKeep);
     });
   }
-
+*/
 
 }

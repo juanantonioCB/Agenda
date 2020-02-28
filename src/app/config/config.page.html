@@ -1,9 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>config</ion-title>
+    <ion-title>Añadir Tarea</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <img (click)="createPopover()" style="display: block;margin-left: auto;margin-right: auto;width: 40%;" [src]="image" />
+
+  <form [formGroup]="taskForm">
+    <ion-item>
+      <ion-label position="floating">Título</ion-label>
+      <ion-input formControlName="titulo" type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Hora de comienzo:</ion-label>
+      <ion-datetime displayFormat="HH:mm" placeholder="Selecciona una hora" display-timezone="utc"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Hora de finalización:</ion-label>
+      <ion-datetime displayFormat="HH:mm" placeholder="Selecciona una hora" display-timezone="utc"></ion-datetime>
+    </ion-item>
+  </form>
+  
+  <ion-button expand="full" color="primary" (click)="crearTask()" [disabled]="taskForm.invalid">{{id ? 'Editar Tarea' : 'Crear Tarea'}}</ion-button>
+
 
 </ion-content>
+
