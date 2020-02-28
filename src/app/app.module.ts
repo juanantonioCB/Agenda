@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireModule } from 'angularfire2';
 import { PopovercomponentPageModule } from './ui/popovercomponent/popovercomponent.module';
+import { AngularFireFunctionsModule } from '@angular/fire/functions';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,6 +24,7 @@ import { PopovercomponentPageModule } from './ui/popovercomponent/popovercompone
   imports: [BrowserModule, IonicModule.forRoot(), 
     AppRoutingModule, IonicStorageModule.forRoot(),ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
+    AngularFireFunctionsModule,
     AngularFirestoreModule,PopovercomponentPageModule],
   providers: [
     StatusBar,

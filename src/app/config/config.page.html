@@ -20,6 +20,11 @@
       <ion-label position="floating">Hora de finalización:</ion-label>
       <ion-datetime formControlName="horaFinalizacion" displayFormat="HH:mm" placeholder="Selecciona una hora" display-timezone="utc"></ion-datetime>
     </ion-item>
+    <ion-select formControlName="perfil" [(ngModel)]="perfilSeleccionado" placeholder="Selecciona un perfil">
+      <ion-select-option  value="user1">user1</ion-select-option>
+      <ion-select-option value="user2">user2</ion-select-option>
+  
+    </ion-select>
   </form>
   
   <ion-button expand="full" color="primary" (click)="crearTask()" [disabled]="taskForm.invalid">{{id ? 'Editar Tarea' : 'Crear Tarea'}}</ion-button>

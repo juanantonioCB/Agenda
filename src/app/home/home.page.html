@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>AGENDA</ion-title>
-    <ion-progress-bar color="warning" value="0.6"></ion-progress-bar>
+    <ion-progress-bar color="warning" value="0.3571428571428571‬"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
@@ -9,15 +9,16 @@
   <ion-button routerLink="/config">Configuración</ion-button>
 
 
-  <ion-select placeholder="Selecciona un perfil">
-    <ion-select-option value="f">Female</ion-select-option>
-    <ion-select-option value="m">Male</ion-select-option>
+  <ion-select [(ngModel)]="perfilSeleccionado" (ionChange)="loadPerfil($event)" placeholder="Selecciona un perfil">
+    <ion-select-option  value="user1">user1</ion-select-option>
+    <ion-select-option value="user2">user2</ion-select-option>
+
   </ion-select>
 
-  <ion-list >
+  <ion-list *ngIf="perfilSeleccionado"  >
 
     <!-- ANIMACIÓN MIENTRAS CARGA LA LISTA-->
-    <ng-container *ngIf="!tasks || tasks.length == 0">
+    <ng-container *ngIf="!tasks || tasks.length == 0 ">
       <div *ngFor="let n of [0,1,2]" padding>
         <ion-skeleton-text></ion-skeleton-text>
         <p>
@@ -28,7 +29,7 @@
 
     <ion-item-sliding *ngFor="let task of tasks">
       <ion-item>
-      <ion-card >
+      <ion-card>
         
         <ion-card-header>
           <ion-card-title>{{task.name}} </ion-card-title>

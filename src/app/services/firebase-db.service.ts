@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from 
 import { Task } from '../model/Task';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AngularFireFunctions } from '@angular/fire/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,17 @@ export class FirebaseDBService {
 
   private taskCollection:AngularFirestoreCollection<Task>;
   private tasks: Observable<Task[]>;
-  constructor(private db: AngularFirestore) { }
+  data$: Observable<any>;
+
+  private profiles;
+  constructor(private db: AngularFirestore,
+    private fns: AngularFireFunctions) { }
+
+  async getProfiles(){
+    const callable = this.fns.httpsCallable('getCollections');
+    this.data$ = callable({});
+    return this.data$;
+  }
 
 
   async setProfile(profile:string){

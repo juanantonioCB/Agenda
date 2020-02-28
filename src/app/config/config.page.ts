@@ -16,28 +16,30 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 })
 export class ConfigPage implements OnInit {
 
-  task:Task;
-  id:string;
+  task: Task;
+  id: string;
   imageResponse: any;
-  image:string='assets/no_image.png';
+  image: string = 'assets/no_image.png';
   taskForm: FormGroup;
+  perfilSeleccionado: any;
   constructor(private imagePicker: ImagePicker, private formBuilder: FormBuilder,
     private popoverController: PopoverController,
     private camera: Camera,
-    private ui:UiComponent,
-    private db:FirebaseDBService) {
-    this.taskForm=formBuilder.group({
+    private ui: UiComponent,
+    private db: FirebaseDBService) {
+    this.taskForm = formBuilder.group({
       titulo: ["", Validators.required],
       horaComienzo: ['', Validators.required],
-      horaFinalizacion: ['', Validators.required]
+      horaFinalizacion: ['', Validators.required],
+      perfil: ['', Validators.required]
     });
-   }
+  }
 
   ngOnInit() {
   }
 
 
-  async createPopover(ev: any){
+  async createPopover(ev: any) {
     this.popoverController.create({
       component: PopovercomponentPage,
       showBackdrop: false
@@ -65,8 +67,8 @@ export class ConfigPage implements OnInit {
       mediaType: this.camera.MediaType.PICTURE,
       sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
     }
-    this.camera.getPicture(options).then(imageData=>{
-      this.image='data:image/jpeg;base64,'+imageData;
+    this.camera.getPicture(options).then(imageData => {
+      this.image = 'data:image/jpeg;base64,' + imageData;
     })
   }
 
@@ -96,30 +98,30 @@ export class ConfigPage implements OnInit {
   async crearTask() {
     await this.ui.presentLoading();
     const horaComienzo = new Date(this.taskForm.get('horaComienzo').value);
-    const horaFinalizacion =new Date(this.taskForm.get('horaFinalizacion').value);
+    const horaFinalizacion = new Date(this.taskForm.get('horaFinalizacion').value);
 
-    let hc:string=(horaComienzo.getHours()<10?'0'+horaComienzo.getHours():horaComienzo.getHours())+':'
-    +(horaComienzo.getMinutes()<10?'0'+horaComienzo.getMinutes():horaComienzo.getMinutes());
-    let hf:string=(horaFinalizacion.getHours()<10?'0'+horaFinalizacion.getHours():horaFinalizacion.getHours())+':'
-    +(horaFinalizacion.getMinutes()<10?'0'+horaFinalizacion.getMinutes():horaFinalizacion.getMinutes());
+    let hc: string = (horaComienzo.getHours() < 10 ? '0' + horaComienzo.getHours() : horaComienzo.getHours()) + ':'
+      + (horaComienzo.getMinutes() < 10 ? '0' + horaComienzo.getMinutes() : horaComienzo.getMinutes());
+    let hf: string = (horaFinalizacion.getHours() < 10 ? '0' + horaFinalizacion.getHours() : horaFinalizacion.getHours()) + ':'
+      + (horaFinalizacion.getMinutes() < 10 ? '0' + horaFinalizacion.getMinutes() : horaFinalizacion.getMinutes());
     console.log(hc);
     console.log(hf);
 
-    let task:Task={
-      name:this.taskForm.get('titulo').value,
-      horaComienzo:hc,
-      horaFinalizacion:hf,
-      image:this.image
+    let task: Task = {
+      name: this.taskForm.get('titulo').value,
+      horaComienzo: hc,
+      horaFinalizacion: hf,
+      image: this.image
     }
 
-    this.task=task;
+    this.task = task;
 
 
-    this.db.addTask(this.task,'user1').then(async r=>{
-      await this.ui.presentToast('Tarea agregada correctamente','success');
+    this.db.addTask(this.task, this.perfilSeleccionado).then(async r => {
+      await this.ui.presentToast('Tarea agregada correctamente', 'success');
       await this.ui.hideLoading();
-    }).catch(async err=>{
-      await this.ui.presentToast(err,'danger');
+    }).catch(async err => {
+      await this.ui.presentToast(err, 'danger');
       await this.ui.hideLoading();
     });
   }
