@@ -1,21 +1,26 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>AGENDA</ion-title>
-    <ion-progress-bar color="warning" value="0.3571428571428571‬"></ion-progress-bar>
+    <ion-button color="{{bloqueado ? 'success':'danger'}}" (click)="bloquear()">
+      
+      <ion-icon name="{{bloqueado ? 'lock':'unlock'}}"></ion-icon>
+    </ion-button>
+    <ion-progress-bar color="danger" [value]=time></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div slot="{{bloqueoScroll}}"> <!--fixed-->
   <ion-button routerLink="/config">Configuración</ion-button>
 
 
   <ion-select [(ngModel)]="perfilSeleccionado" (ionChange)="loadPerfil($event)" placeholder="Selecciona un perfil">
-    <ion-select-option  value="user1">user1</ion-select-option>
-    <ion-select-option value="user2">user2</ion-select-option>
-
+    <ion-select-option *ngFor="let perfil of perfiles" value="{{perfil}}">{{perfil}}</ion-select-option>
   </ion-select>
 
-  <ion-list *ngIf="perfilSeleccionado"  >
+  <ion-img *ngIf="!perfilSeleccionado" src="assets/seleccionaUsuario.png"></ion-img>
+
+  <ion-list *ngIf="perfilSeleccionado" >
 
     <!-- ANIMACIÓN MIENTRAS CARGA LA LISTA-->
     <ng-container *ngIf="!tasks || tasks.length == 0 ">
@@ -28,23 +33,24 @@
     </ng-container>
 
     <ion-item-sliding *ngFor="let task of tasks">
-      <ion-item>
-      <ion-card>
-        
-        <ion-card-header>
-          <ion-card-title>{{task.name}} </ion-card-title>
+      <ion-item id="{{task.id}}">
+        <ion-card color="{{task.horaFinalizacion.toMillis() | compruebaFinalizacion}}">
 
-          <ion-card-subtitle>{{task.horaComienzo}} - {{task.horaFinalizacion}}</ion-card-subtitle>
-          <ion-card-subtitle>
-            
-          </ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-img [src]="task.image"></ion-img>
-        </ion-card-content>
-      </ion-card>
+          <ion-card-header>
+            <ion-card-title>{{task.name}} </ion-card-title>
 
-    </ion-item>
+            <ion-card-subtitle>{{task.horaComienzo.toMillis()| date : 'HH:mm'}} -
+              {{task.horaFinalizacion.toMillis()| date : 'HH:mm'}}</ion-card-subtitle>
+            <ion-card-subtitle>
+
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-img [src]="task.image"></ion-img>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-item>
       <ion-item-options side="end" (ionSwipe)="delete(task.id)">
         <ion-item-option (click)="delete(task.id)" color="danger" expandable>
           <ion-icon name="trash"></ion-icon>
@@ -62,7 +68,7 @@
   </ion-list>
 
 
-
+</div>
 
 
 </ion-content>

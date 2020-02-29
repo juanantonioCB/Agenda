@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ImagePicker, ImagePickerOptions } from '@ionic-native/image-picker/ngx';
 import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { Task } from '../model/Task';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, AlertController } from '@ionic/angular';
 import { PopovercomponentPage } from '../ui/popovercomponent/popovercomponent.page';
 import { UiComponent } from '../ui/ui.component';
 import { FirebaseDBService } from '../services/firebase-db.service';
@@ -22,10 +22,13 @@ export class ConfigPage implements OnInit {
   image: string = 'assets/no_image.png';
   taskForm: FormGroup;
   perfilSeleccionado: any;
+  comprobarTiempoo: boolean = true;
+  perfiles: string[];
   constructor(private imagePicker: ImagePicker, private formBuilder: FormBuilder,
     private popoverController: PopoverController,
     private camera: Camera,
     private ui: UiComponent,
+    private alertController: AlertController,
     private db: FirebaseDBService) {
     this.taskForm = formBuilder.group({
       titulo: ["", Validators.required],
@@ -35,7 +38,10 @@ export class ConfigPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    (await this.db.getProfiles()).subscribe(res => {
+      this.perfiles = res.collections;
+    });
   }
 
 
@@ -58,6 +64,32 @@ export class ConfigPage implements OnInit {
       popoverElement.present();
     });
   }
+
+  selectChanged(selectedColor) {
+    if (selectedColor === 'Nuevo Usuario') {
+      this.inputNuevoUsuario();
+    }
+  };
+
+
+  async inputNuevoUsuario() {
+    const inputAlert = await this.alertController.create({
+      header: 'Enter your custom color:',
+      inputs: [{ type: 'text', placeholder: 'type in' }],
+      buttons: [{ text: 'Cancel' }, { text: 'Ok' }]
+    });
+    await inputAlert.present();
+
+    await inputAlert.onDidDismiss().then((data) => {
+      let customUsuario: string = data.data.values[0];
+      if (customUsuario) {
+        this.perfiles.push(customUsuario);
+        this.perfilSeleccionado=customUsuario;
+      }
+    })
+
+  };
+
 
   public choosePhoto() {
     const options: CameraOptions = {
@@ -97,15 +129,8 @@ export class ConfigPage implements OnInit {
 
   async crearTask() {
     await this.ui.presentLoading();
-    const horaComienzo = new Date(this.taskForm.get('horaComienzo').value);
-    const horaFinalizacion = new Date(this.taskForm.get('horaFinalizacion').value);
-
-    let hc: string = (horaComienzo.getHours() < 10 ? '0' + horaComienzo.getHours() : horaComienzo.getHours()) + ':'
-      + (horaComienzo.getMinutes() < 10 ? '0' + horaComienzo.getMinutes() : horaComienzo.getMinutes());
-    let hf: string = (horaFinalizacion.getHours() < 10 ? '0' + horaFinalizacion.getHours() : horaFinalizacion.getHours()) + ':'
-      + (horaFinalizacion.getMinutes() < 10 ? '0' + horaFinalizacion.getMinutes() : horaFinalizacion.getMinutes());
-    console.log(hc);
-    console.log(hf);
+    const hc = new Date(this.taskForm.get('horaComienzo').value);
+    const hf = new Date(this.taskForm.get('horaFinalizacion').value);
 
     let task: Task = {
       name: this.taskForm.get('titulo').value,
@@ -116,6 +141,9 @@ export class ConfigPage implements OnInit {
 
     this.task = task;
 
+    let p: Date = new Date();
+    p.setHours(10);
+    p.setMinutes(30);
 
     this.db.addTask(this.task, this.perfilSeleccionado).then(async r => {
       await this.ui.presentToast('Tarea agregada correctamente', 'success');

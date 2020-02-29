@@ -17,6 +17,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireModule } from 'angularfire2';
 import { PopovercomponentPageModule } from './ui/popovercomponent/popovercomponent.module';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { CompruebaFinalizacionPipe } from './pipes/comprueba-finalizacion.pipe';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,6 +31,7 @@ import { AngularFireFunctionsModule } from '@angular/fire/functions';
     StatusBar,
     SplashScreen,
     ImagePicker,
+    
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

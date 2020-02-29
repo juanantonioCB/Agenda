@@ -4,7 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content >
   <img (click)="createPopover()" style="display: block;margin-left: auto;margin-right: auto;width: 40%;" [src]="image" />
 
   <form [formGroup]="taskForm">
@@ -14,17 +14,21 @@
     </ion-item>
     <ion-item>
       <ion-label position="floating">Hora de comienzo:</ion-label>
-      <ion-datetime formControlName="horaComienzo" displayFormat="HH:mm" placeholder="Selecciona una hora" display-timezone="utc"></ion-datetime>
+      <ion-datetime formControlName="horaComienzo" displayFormat="HH:mm" placeholder="Selecciona una hora" display-timezone="utc" doneText="Aceptar" cancelText="Cancelar"></ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Hora de finalización:</ion-label>
-      <ion-datetime formControlName="horaFinalizacion" displayFormat="HH:mm" placeholder="Selecciona una hora" display-timezone="utc"></ion-datetime>
+      <ion-datetime formControlName="horaFinalizacion" displayFormat="HH:mm" placeholder="Selecciona una hora" display-timezone="utc" doneText="Aceptar" cancelText="Cancelar" ></ion-datetime>
     </ion-item>
-    <ion-select formControlName="perfil" [(ngModel)]="perfilSeleccionado" placeholder="Selecciona un perfil">
-      <ion-select-option  value="user1">user1</ion-select-option>
-      <ion-select-option value="user2">user2</ion-select-option>
-  
+    <ion-item>
+      <ion-label position="floating">Perfil:</ion-label>
+
+    <ion-select #mySelect formControlName="perfil" [(ngModel)]="perfilSeleccionado" 
+    placeholder="Selecciona un perfil"  (ionChange)="selectChanged(mySelect.value)">
+      <ion-select-option>Nuevo Usuario</ion-select-option>
+      <ion-select-option *ngFor="let perfil of perfiles"  value="{{perfil}}">{{perfil}}</ion-select-option>
     </ion-select>
+  </ion-item>
   </form>
   
   <ion-button expand="full" color="primary" (click)="crearTask()" [disabled]="taskForm.invalid">{{id ? 'Editar Tarea' : 'Crear Tarea'}}</ion-button>

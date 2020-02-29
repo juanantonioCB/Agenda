@@ -6,11 +6,13 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 import { UiComponent } from '../ui/ui.component';
+import { CompruebaFinalizacionPipe } from '../pipes/comprueba-finalizacion.pipe';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    
     IonicModule,
     RouterModule.forChild([
       {
@@ -19,7 +21,7 @@ import { UiComponent } from '../ui/ui.component';
       }
     ])
   ],
-  declarations: [HomePage],
-  providers:[UiComponent]
+  declarations: [HomePage,CompruebaFinalizacionPipe],
+  providers:[UiComponent,]
 })
 export class HomePageModule {}
